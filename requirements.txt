@@ -1,0 +1,12 @@
+import subprocess
+import librosa
+import noisereduce as nr
+import soundfile as sf
+from pydub import AudioSegment
+from telegram import Update, InputFile
+from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
+import os
+import whisper
+import json
+import logging
+from deep_translator import GoogleTranslator
