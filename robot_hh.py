@@ -105,12 +105,12 @@ def txt_to_srt(input_txt: str, output_srt: str) -> None:
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """ارسال راهنمای کامل"""
     help_text = (
-        "🎬 ربات تولید زیرنویس دوزبانه\n\n"
+        " ربات تولید زیرنویس دوزبانه\n\n"
         "1. ویدیو را ارسال کنید (حداکثر 50MB)\n"
         "2. فایل متنی را ویرایش کنید\n"
         "3. فایل ویرایش شده را بازگردانید\n"
         "4. ویدیو نهایی را دریافت کنید\n\n"
-        "📝 فرمت فایل متنی:\n"
+        " فرمت فایل متنی:\n"
         "شروع | پایان | متن انگلیسی | متن فارسی"
     )
     await update.message.reply_text(help_text)
@@ -122,13 +122,13 @@ async def handle_video(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         
         # بررسی حجم ویدیو
         if update.message.video.file_size > config.MAX_VIDEO_SIZE:
-            await update.message.reply_text("❌ حجم ویدیو باید کمتر از 50 مگابایت باشد")
+            await update.message.reply_text(" حجم ویدیو باید کمتر از 50 مگابایت باشد")
             return
 
         # دریافت ویدیو
         video_file = await update.message.video.get_file()
         await video_file.download_to_drive("input_video.mp4")
-        await update.message.reply_text("🔄 در حال پردازش ویدیو...")
+        await update.message.reply_text(" در حال پردازش ویدیو...")
 
         # استخراج و پردازش صدا
         subprocess.run([
@@ -152,7 +152,7 @@ async def handle_video(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         await update.message.reply_document(
             document=open("subtitles_editable.txt", "rb"),
             caption=(
-                "📝 فایل زیرنویس برای ویرایش:\n"
+                " فایل زیرنویس برای ویرایش:\n"
                 "1. فرمت را تغییر ندهید\n"
                 "2. متنها را اصلاح کنید\n"
                 "3. فایل ویرایش شده را ارسال کنید"
@@ -161,20 +161,20 @@ async def handle_video(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 
     except Exception as e:
         logger.error(f"خطای پردازش ویدیو: {str(e)}")
-        await update.message.reply_text("⚠️ خطا در پردازش ویدیو")
+        await update.message.reply_text(" خطا در پردازش ویدیو")
         cleanup_files()
 
 async def handle_text_file(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """پردازش فایل متنی ویرایش شده"""
     try:
         if not update.message.document.file_name.endswith('.txt'):
-            await update.message.reply_text("❌ لطفا فقط فایل TXT ارسال کنید")
+            await update.message.reply_text(" لطفا فقط فایل TXT ارسال کنید")
             return
 
         # دریافت فایل ویرایش شده
         txt_file = await update.message.document.get_file()
         await txt_file.download_to_drive("edited_subtitles.txt")
-        await update.message.reply_text("🔄 در حال تولید ویدیو نهایی...")
+        await update.message.reply_text(" در حال تولید ویدیو نهایی...")
 
         # تبدیل به SRT
         txt_to_srt("edited_subtitles.txt", "final_subtitles.srt")
@@ -190,12 +190,12 @@ async def handle_text_file(update: Update, context: ContextTypes.DEFAULT_TYPE) -
         # ارسال ویدیوی نهایی
         await update.message.reply_video(
             video=open("output_with_subtitles.mp4", "rb"),
-            caption="✅ ویدیو نهایی با زیرنویس ویرایش شده"
+            caption=" ویدیو نهایی با زیرنویس ویرایش شده"
         )
 
     except Exception as e:
         logger.error(f"خطای پردازش فایل متنی: {str(e)}")
-        await update.message.reply_text("⚠️ خطا در پردازش فایل ویرایش شده")
+        await update.message.reply_text(" خطا در پردازش فایل ویرایش شده")
     finally:
         cleanup_files()
 
